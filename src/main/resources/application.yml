@@ -1,0 +1,29 @@
+spring:
+  kafka:
+    consumer:
+      group-id: tpd-loggers
+      auto-offset-reset: earliest
+    # change this property if you are using your own
+    # Kafka cluster or your Docker IP is different
+    bootstrap-servers: localhost:9092
+  cloud:
+    openfeign:
+      client:
+        config:
+            test:
+                url: http://remote-service.com
+                connectTimeout: 5000
+                readTimeout: 5000
+                loggerLevel: full
+      httpclient:
+        hc5:
+          enabled: true
+
+tpd:
+  topic-name: advice-topic
+  messages-per-request: 10
+
+pybc:
+  urlMap:
+    pay: https://randomuser.me
+    memb: https://randomuser.me
