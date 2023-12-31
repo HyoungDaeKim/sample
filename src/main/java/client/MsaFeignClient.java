@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.net.URI;
 import java.util.Map;
 
-@FeignClient(name="msa-api", url = "$")
 public interface MsaFeignClient {
-    @GetMapping
+    @RequestLine("GET")
     public Map<String, Object> get(URI uri, Object param);
-    @PostMapping
+    @RequestLine("POST")
     public Map<String, Object> post(URI uri, Object param);
-    @DeleteMapping
+    @RequestLine("DELETE")
     public Map<String, Object> delete(URI uri, Object param);
 }

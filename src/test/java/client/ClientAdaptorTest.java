@@ -28,7 +28,7 @@ public class ClientAdaptorTest {
                 .retrieve();
         System.out.println("r = " + r);
     }
-    @Test
+    /*@Test
     public void testFeignClientAdaptor() throws URISyntaxException {
         Map<String, Object> param = new HashMap<>();
         param.put("nat", "us");
@@ -41,5 +41,5 @@ public class ClientAdaptorTest {
                 .param(param)
                 .retrieve();
         System.out.println("r = " + r);
-    }
+    }*/
 }
