@@ -21,7 +21,7 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
 
     @Getter
     @Setter
-    static class RestClientRequestInfo implements RequestInfo<RestClientRequestInfo> {
+    static class RestClientRequestInfo extends AbstractRequestInfo<RestClientRequestInfo> {
         private RestClient delegator;
         private HttpHeaders headers;
         private HttpMethod httpMethod = HttpMethod.GET;
@@ -36,30 +36,24 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
             this.requestHeadersUriSpec = delegator.get();
             return this;
         }
-
         @Override
-        public RestClientRequestInfo put() {
-            return null;
+        public RestClientRequestInfo post() {
+            this.requestHeadersUriSpec = delegator.post();
+            return this;
         }
-
-        @Override
-        public RestClientRequestInfo delete() {
-            return null;
-        }
-
         @Override
         public RestClientRequestInfo uri(String uri) {
             requestHeadersUriSpec.uri(uri);
             return this;
         }
-
-        @Override
-        public RestClientRequestInfo param(Object param) {
-            return this;
-        }
-
         @Override
         public RestClientRequestInfo header(String headerName, String... headerValues) {
+            requestHeadersUriSpec.header(headerName, headerValues);
+            return this;
+        }
+        @Override
+        public RestClientRequestInfo param(Object param) {
+            this.param = param;
             return this;
         }
 

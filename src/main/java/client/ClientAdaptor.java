@@ -9,8 +9,7 @@ public interface ClientAdaptor {
     interface RequestInfo<R extends RequestInfo<R>> {
         R uri(String uri);
         R get();
-        R put();
-        R delete();
+        R post();
         R param(Object param);
         R header(String headerName, String... headerValues);
         Map<String, Object> retrieve() throws URISyntaxException;

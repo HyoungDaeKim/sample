@@ -1,12 +1,9 @@
 package client;
 
-import feign.Feign;
-import feign.Target;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,6 +13,7 @@ import java.util.Map;
 @Setter
 public class FeignClientAdaptor extends AbstractClientAdaptor {
     private MsaFeignClient msaFeignClient;
+
     @Override
     public RequestInfo<?> msa(String msa) {
         return new FeignClientRequestInfo(msaFeignClient, getUriMap().get(msa));
@@ -47,15 +45,10 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
             this.httpMethod = HttpMethod.GET;
             return this;
         }
-
         @Override
-        public FeignClientRequestInfo put() {
-            return null;
-        }
-
-        @Override
-        public FeignClientRequestInfo delete() {
-            return null;
+        public FeignClientRequestInfo post() {
+            this.httpMethod = HttpMethod.POST;
+            return this;
         }
 
         @Override
@@ -71,7 +64,7 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
 
         @Override
         public Map<String, Object> retrieve() throws URISyntaxException {
-            Map<String, Object> result = Collections.emptyMap();
+            Map<String, Object> result;
             String url = baseUrl;
             if (!url.endsWith("/")) {
                 url += "/";
@@ -80,6 +73,15 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
             URI _uri = new URI(url);
             if (httpMethod == HttpMethod.GET) {
                 result = delegator.get(_uri, param);
+            }
+            else if (httpMethod == HttpMethod.POST) {
+                result = delegator.post(_uri, param);
+            }
+            else if (httpMethod == HttpMethod.DELETE) {
+                result = delegator.delete(_uri, param);
+            }
+            else {
+                result = delegator.post(_uri, param);
             }
             return result;
         }
