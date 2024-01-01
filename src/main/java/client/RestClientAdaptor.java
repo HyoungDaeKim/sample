@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestClient;
 
 import java.util.Map;
@@ -24,7 +23,6 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
     static class RestClientRequestInfo extends AbstractRequestInfo<RestClientRequestInfo> {
         private RestClient delegator;
         private HttpHeaders headers;
-        private HttpMethod httpMethod = HttpMethod.GET;
         private RestClient.RequestHeadersUriSpec<?> requestHeadersUriSpec;
         private Object param;
 
