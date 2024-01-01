@@ -23,7 +23,7 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
     public FeignClientAdaptor(ObjectFactory<HttpMessageConverters> messageConverters) {
         msaFeignClient = Feign.builder()
                 .encoder(new SpringEncoder(messageConverters))
-                .target(Target.HardCodedTarget.EmptyTarget.create(MsaFeignClient.class));
+                .target(MsaFeignClient.class, null);
     }
 
     @Override
