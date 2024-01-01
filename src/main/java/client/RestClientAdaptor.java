@@ -23,41 +23,40 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
     static class RestClientRequestInfo extends AbstractRequestInfo<RestClientRequestInfo> {
         private RestClient delegator;
         private HttpHeaders headers;
-        private RestClient.RequestHeadersUriSpec<?> requestHeadersUriSpec;
-        private Object param;
+        private RestClient.RequestBodyUriSpec requestBodyUriSpec;
 
         public RestClientRequestInfo(RestClient delegator) {
             this.delegator = delegator;
         }
         @Override
         public RestClientRequestInfo get() {
-            this.requestHeadersUriSpec = delegator.get();
+            this.requestBodyUriSpec = (RestClient.RequestBodyUriSpec)delegator.get();
             return this;
         }
         @Override
         public RestClientRequestInfo post() {
-            this.requestHeadersUriSpec = delegator.post();
+            this.requestBodyUriSpec = delegator.post();
             return this;
         }
         @Override
         public RestClientRequestInfo uri(String uri) {
-            requestHeadersUriSpec.uri(uri);
+            requestBodyUriSpec.uri(uri);
             return this;
         }
         @Override
         public RestClientRequestInfo header(String headerName, String... headerValues) {
-            requestHeadersUriSpec.header(headerName, headerValues);
+            requestBodyUriSpec.header(headerName, headerValues);
             return this;
         }
         @Override
         public RestClientRequestInfo param(Object param) {
-            this.param = param;
+            requestBodyUriSpec.body(param);
             return this;
         }
 
         @Override
         public Map<String, Object> retrieve() {
-            return requestHeadersUriSpec.retrieve().body(
+            return requestBodyUriSpec.retrieve().body(
                     new ParameterizedTypeReference<>() {
                     }
             );

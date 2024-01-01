@@ -22,7 +22,7 @@ public class ClientAdaptorTest {
         adaptor.setUriMap(uriMap);
         Map<String, Object> r = adaptor
                 .msa("pay")
-                .get()
+                .post()
                 .uri("/api")
                 .param(ImmutableMap.of("nat", "us"))
                 .retrieve();
