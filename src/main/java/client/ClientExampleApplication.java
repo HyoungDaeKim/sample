@@ -22,7 +22,7 @@ public class ClientExampleApplication {
     public static void main(String[] args) {
         SpringApplication.run(ClientExampleApplication.class, args);
     }
-
+/*
     static  Map<String, String> uriMap = new HashMap<>();
     static {
         uriMap.put("pay", "https://randomuser.me");
@@ -44,5 +44,5 @@ public class ClientExampleApplication {
                     .retrieve();
             System.out.println("r = " + r);
         };
-    }
+    }*/
 }
