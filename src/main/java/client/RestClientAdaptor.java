@@ -63,7 +63,7 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
 
         @Override
         public <T> T retrieveTo(ParameterizedTypeReference<T> bodyType) {
-            return null;
+            return requestHeadersUriSpec.retrieve().body(bodyType);
         }
     }
 }
