@@ -24,7 +24,6 @@ public class ClientExampleApplication {
     public static void main(String[] args) {
         SpringApplication.run(ClientExampleApplication.class, args);
     }
-/*
     static  Map<String, String> uriMap = new HashMap<>();
     static {
         uriMap.put("pay", "https://jsonplaceholder.typicode.com");
@@ -49,5 +48,5 @@ public class ClientExampleApplication {
                 System.out.println("m = " + m);
             });
         };
-    }*/
+    }
 }

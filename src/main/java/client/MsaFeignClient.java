@@ -1,5 +1,6 @@
 package client;
 
+import feign.HeaderMap;
 import feign.RequestLine;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,9 +12,9 @@ import java.util.Map;
 
 public interface MsaFeignClient {
     @RequestLine(value = "GET")
-    public String get(URI uri);
+    public String get(URI uri, @HeaderMap Map<String, Object> headers);
     @RequestLine(value = "POST")
-    public String post(URI uri, Object param);
+    public String post(URI uri, @HeaderMap Map<String, Object> headers, Object param);
     @RequestLine(value = "DELETE")
-    public String delete(URI uri, Object param);
+    public String delete(URI uri, @HeaderMap Map<String, Object> headers, Object param);
 }

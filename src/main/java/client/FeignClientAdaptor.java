@@ -14,11 +14,14 @@ import org.springframework.cloud.openfeign.support.SpringDecoder;
 import org.springframework.cloud.openfeign.support.SpringEncoder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
+import org.springframework.util.CollectionUtils;
 
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Setter
 public class FeignClientAdaptor extends AbstractClientAdaptor {
@@ -76,7 +79,6 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
 
         @Override
         public String retrieve() {
-            String result;
             String url = baseUrl;
             if (!url.endsWith("/")) {
                 url += uri;
@@ -84,25 +86,35 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
             else {
                 url = url.substring(0, url.length()-1) + uri;
             }
-            URI _uri = null;
+            URI uri = null;
             try {
-                _uri = new URI(url);
+                uri = new URI(url);
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
+            String result;
+            Map<String, Object> getHeaderMap = getHeaderMap();
             if (httpMethod == HttpMethod.GET) {
-                result = delegator.get(_uri);
+                result = delegator.get(uri, getHeaderMap);
             }
             else if (httpMethod == HttpMethod.POST) {
-                result = delegator.post(_uri, param);
+                result = delegator.post(uri, getHeaderMap, param);
             }
             else if (httpMethod == HttpMethod.DELETE) {
-                result = delegator.delete(_uri, param);
+                result = delegator.delete(uri, getHeaderMap, param);
             }
             else {
-                result = delegator.post(_uri, param);
+                result = delegator.post(uri, getHeaderMap, param);
             }
             return result;
+        }
+
+        private Map<String, Object> getHeaderMap() {
+            Map<String, Object> headerMap = new HashMap<>();
+            getHeaders().forEach((key, values) -> {
+                headerMap.put(key, CollectionUtils.isEmpty(values) ? null : values.get(0));
+            });
+            return headerMap;
         }
 
         @Override

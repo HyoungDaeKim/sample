@@ -14,7 +14,7 @@ public abstract class AbstractClientAdaptor implements ClientAdaptor {
     static abstract class AbstractRequestInfo<R extends AbstractRequestInfo<R>> implements RequestInfo<R> {
         private HttpHeaders headers;
 
-        private HttpHeaders getHeaders() {
+        public HttpHeaders getHeaders() {
             if (this.headers == null) {
                 this.headers = new HttpHeaders();
             }
