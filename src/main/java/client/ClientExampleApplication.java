@@ -12,8 +12,10 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @EnableFeignClients
@@ -25,7 +27,7 @@ public class ClientExampleApplication {
 
     static  Map<String, String> uriMap = new HashMap<>();
     static {
-        uriMap.put("pay", "https://randomuser.me");
+        uriMap.put("pay", "https://jsonplaceholder.typicode.com");
     }
 
     @Autowired
@@ -36,13 +38,16 @@ public class ClientExampleApplication {
         return args -> {
             FeignClientAdaptor adaptor = new FeignClientAdaptor(messageConverters);
             adaptor.setUriMap(uriMap);
-            Map<String, Object> r = adaptor
+            List<Map> r = adaptor
                     .msa("pay")
                     .get()
-                    .uri("/api")
-                    .param(ImmutableMap.of("nat", "us"))
-                    .retrieve();
-            System.out.println("r = " + r);
+                    .uri("/albums")
+                    //.param(ImmutableMap.of("nat", "us"))
+                    .retrieveTo(new ParameterizedTypeReference<>() {
+                    });
+            r.forEach(m -> {
+                System.out.println("m = " + m);
+            });
         };
     }
 }

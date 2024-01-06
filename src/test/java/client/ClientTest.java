@@ -15,7 +15,7 @@ public class ClientTest {
     public void testRestClientAdaptor() throws URISyntaxException {
         Map<String, Object> param = new HashMap<>();
         param.put("nat", "us");
-        Map<String, Object> r = adaptor
+        String r = adaptor
                 .msa("pay")
                 .get()
                 .uri("/api")

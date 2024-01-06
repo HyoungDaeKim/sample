@@ -20,11 +20,11 @@ public class ClientAdaptorTest {
     public void testRestClientAdaptor() throws URISyntaxException {
         RestClientAdaptor adaptor = new RestClientAdaptor(RestClient.builder());
         adaptor.setUriMap(uriMap);
-        Map<String, Object> r = adaptor
+        String r = adaptor
                 .msa("pay")
                 .get()
                 .uri("/api")
-                .param(ImmutableMap.of("nat", "us"))
+                //.param(ImmutableMap.of("nat", "us"))
                 .retrieve();
         System.out.println("r = " + r);
     }

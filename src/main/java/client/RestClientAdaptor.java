@@ -7,8 +7,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestClient;
 
-import java.util.Map;
-
 @RequiredArgsConstructor
 public class RestClientAdaptor extends AbstractClientAdaptor {
     private final RestClient.Builder restClientBuilder;
@@ -56,11 +54,16 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
         }
 
         @Override
-        public Map<String, Object> retrieve() {
+        public String retrieve() {
             return requestHeadersUriSpec.retrieve().body(
                     new ParameterizedTypeReference<>() {
                     }
             );
+        }
+
+        @Override
+        public <T> T retrieveTo(ParameterizedTypeReference<T> bodyType) {
+            return null;
         }
     }
 }

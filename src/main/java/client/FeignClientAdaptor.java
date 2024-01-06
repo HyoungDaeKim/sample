@@ -1,20 +1,24 @@
 package client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Feign;
+import feign.Logger;
 import feign.Target;
-import feign.form.FormEncoder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.cloud.openfeign.support.SpringDecoder;
 import org.springframework.cloud.openfeign.support.SpringEncoder;
-import org.springframework.http.HttpHeaders;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
+import java.util.List;
 
 @Setter
 public class FeignClientAdaptor extends AbstractClientAdaptor {
@@ -22,8 +26,10 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
 
     public FeignClientAdaptor(ObjectFactory<HttpMessageConverters> messageConverters) {
         msaFeignClient = Feign.builder()
+                .logLevel(Logger.Level.FULL)
                 .encoder(new SpringEncoder(messageConverters))
-                .target(MsaFeignClient.class, null);
+                .decoder(new SpringDecoder(messageConverters))
+                .target(Target.EmptyTarget.create(MsaFeignClient.class));
     }
 
     @Override
@@ -39,7 +45,6 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
         private Object param;
         private String uri;
         private HttpMethod httpMethod;
-        private HttpHeaders httpHeaders;
 
         public FeignClientRequestInfo(MsaFeignClient delegator, String baseUrl) {
             this.delegator = delegator;
@@ -70,8 +75,8 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
         }
 
         @Override
-        public Map<String, Object> retrieve() throws URISyntaxException {
-            Map<String, Object> result;
+        public String retrieve() {
+            String result;
             String url = baseUrl;
             if (!url.endsWith("/")) {
                 url += uri;
@@ -79,9 +84,14 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
             else {
                 url = url.substring(0, url.length()-1) + uri;
             }
-            URI _uri = new URI(url);
+            URI _uri = null;
+            try {
+                _uri = new URI(url);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
             if (httpMethod == HttpMethod.GET) {
-                result = delegator.get(_uri, param);
+                result = delegator.get(_uri);
             }
             else if (httpMethod == HttpMethod.POST) {
                 result = delegator.post(_uri, param);
@@ -91,6 +101,24 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
             }
             else {
                 result = delegator.post(_uri, param);
+            }
+            return result;
+        }
+
+        @Override
+        public <T> T retrieveTo(ParameterizedTypeReference<T> bodyType) {
+            T result;
+            String value = retrieve();
+            TypeReference<?> tr = new TypeReference<>() {
+                public Type getType() {
+                    return bodyType.getType();
+                }
+            };
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                result = (T) mapper.readValue(value, tr);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
             }
             return result;
         }

@@ -10,10 +10,10 @@ import java.net.URI;
 import java.util.Map;
 
 public interface MsaFeignClient {
-    @RequestLine("GET")
-    public Map<String, Object> get(URI uri, Object param);
-    @RequestLine("POST")
-    public Map<String, Object> post(URI uri, Object param);
-    @RequestLine("DELETE")
-    public Map<String, Object> delete(URI uri, Object param);
+    @RequestLine(value = "GET")
+    public String get(URI uri);
+    @RequestLine(value = "POST")
+    public String post(URI uri, Object param);
+    @RequestLine(value = "DELETE")
+    public String delete(URI uri, Object param);
 }

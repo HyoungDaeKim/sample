@@ -1,7 +1,9 @@
 package client;
 
+import org.springframework.core.ParameterizedTypeReference;
+
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
-import java.util.Map;
 
 public interface ClientAdaptor {
     RequestInfo<?> msa(String msa);
@@ -12,6 +14,7 @@ public interface ClientAdaptor {
         R post();
         R param(Object param);
         R header(String headerName, String... headerValues);
-        Map<String, Object> retrieve() throws URISyntaxException;
+        String retrieve();
+        <T> T retrieveTo(ParameterizedTypeReference<T> bodyType);
     }
 }
