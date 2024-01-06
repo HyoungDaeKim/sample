@@ -94,7 +94,7 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
             else {
                 url = url.substring(0, url.length()-1) + uri;
             }
-            URI uri = null;
+            URI uri;
             try {
                 uri = new URI(url);
             } catch (URISyntaxException e) {
