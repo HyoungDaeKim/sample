@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 
 public interface ClientAdaptor {
     RequestInfo<?> msa(String msa);
+    RequestInfo<?> baseUrl(String baseUrl);
 
     interface RequestInfo<R extends RequestInfo<R>> {
         R uri(String uri);
@@ -15,6 +16,7 @@ public interface ClientAdaptor {
         R param(Object param);
         R header(String headerName, String... headerValues);
         String retrieve();
+        <T> T retreiveTo(Class<T> type);
         <T> T retrieveTo(ParameterizedTypeReference<T> bodyType);
     }
 }

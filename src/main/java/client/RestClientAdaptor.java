@@ -11,8 +11,15 @@ import org.springframework.web.client.RestClient;
 public class RestClientAdaptor extends AbstractClientAdaptor {
     private final RestClient.Builder restClientBuilder;
 
+    @Override
     public RequestInfo<?> msa(String msa) {
         restClientBuilder.baseUrl(getUriMap().get(msa));
+        return new RestClientRequestInfo(restClientBuilder.build());
+    }
+
+    @Override
+    public RequestInfo<?> baseUrl(String baseUrl) {
+        restClientBuilder.baseUrl(baseUrl);
         return new RestClientRequestInfo(restClientBuilder.build());
     }
 
@@ -58,6 +65,11 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
                     new ParameterizedTypeReference<>() {
                     }
             );
+        }
+
+        @Override
+        public <T> T retreiveTo(Class<T> type) {
+            return requestHeadersUriSpec.retrieve().body(type);
         }
 
         @Override

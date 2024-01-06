@@ -42,6 +42,11 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
         return new FeignClientRequestInfo(msaFeignClient, getUriMap().get(msa));
     }
 
+    @Override
+    public RequestInfo<?> baseUrl(String baseUrl) {
+        return new FeignClientRequestInfo(msaFeignClient, baseUrl);
+    }
+
     @Getter
     @Setter
     static class FeignClientRequestInfo extends AbstractRequestInfo<FeignClientRequestInfo> {
@@ -50,6 +55,7 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
         private Object param;
         private String uri;
         private HttpMethod httpMethod;
+        private ObjectMapper mapper = new ObjectMapper();
 
         public FeignClientRequestInfo(MsaFeignClient delegator, String baseUrl) {
             this.delegator = delegator;
@@ -112,6 +118,12 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
         }
 
         @Override
+        public <T> T retreiveTo(Class<T> type) {
+            String value = retrieve();
+            return mapper.convertValue(value, type);
+        }
+
+        @Override
         public <T> T retrieveTo(ParameterizedTypeReference<T> bodyType) {
             T result;
             String value = retrieve();
@@ -120,7 +132,6 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
                     return bodyType.getType();
                 }
             };
-            ObjectMapper mapper = new ObjectMapper();
             try {
                 result = (T) mapper.readValue(value, tr);
             } catch (JsonProcessingException e) {
