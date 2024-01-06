@@ -16,7 +16,7 @@ public interface ClientAdaptor {
         R param(Object param);
         R header(String headerName, String... headerValues);
         String retrieve();
-        <T> T retreiveTo(Class<T> type);
+        <T> T retrieveTo(Class<T> type);
         <T> T retrieveTo(ParameterizedTypeReference<T> bodyType);
     }
 }

@@ -118,7 +118,7 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
         }
 
         @Override
-        public <T> T retreiveTo(Class<T> type) {
+        public <T> T retrieveTo(Class<T> type) {
             String value = retrieve();
             return mapper.convertValue(value, type);
         }

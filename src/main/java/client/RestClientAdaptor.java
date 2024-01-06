@@ -68,7 +68,7 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
         }
 
         @Override
-        public <T> T retreiveTo(Class<T> type) {
+        public <T> T retrieveTo(Class<T> type) {
             return requestHeadersUriSpec.retrieve().body(type);
         }
 
