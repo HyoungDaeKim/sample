@@ -15,6 +15,8 @@ import org.springframework.cloud.openfeign.support.SpringEncoder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -93,28 +95,20 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
                 throw new RuntimeException(e);
             }
             String result;
-            Map<String, Object> getHeaderMap = getHeaderMap();
+            MultiValueMap<String, String> headers = getHeaders();
             if (httpMethod == HttpMethod.GET) {
-                result = delegator.get(uri, getHeaderMap);
+                result = delegator.get(uri, headers);
             }
             else if (httpMethod == HttpMethod.POST) {
-                result = delegator.post(uri, getHeaderMap, param);
+                result = delegator.post(uri, headers, param);
             }
             else if (httpMethod == HttpMethod.DELETE) {
-                result = delegator.delete(uri, getHeaderMap, param);
+                result = delegator.delete(uri, headers, param);
             }
             else {
-                result = delegator.post(uri, getHeaderMap, param);
+                result = delegator.post(uri, headers, param);
             }
             return result;
-        }
-
-        private Map<String, Object> getHeaderMap() {
-            Map<String, Object> headerMap = new HashMap<>();
-            getHeaders().forEach((key, values) -> {
-                headerMap.put(key, CollectionUtils.isEmpty(values) ? null : values.get(0));
-            });
-            return headerMap;
         }
 
         @Override

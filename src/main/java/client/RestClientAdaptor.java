@@ -20,7 +20,6 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
     @Setter
     static class RestClientRequestInfo extends AbstractRequestInfo<RestClientRequestInfo> {
         private RestClient delegator;
-        private HttpHeaders headers;
         private RestClient.RequestHeadersUriSpec<?> requestHeadersUriSpec;
         private Object param;
 
