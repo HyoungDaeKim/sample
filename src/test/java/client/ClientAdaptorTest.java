@@ -22,10 +22,10 @@ public class ClientAdaptorTest {
         adaptor.setUriMap(uriMap);
         String r = adaptor
                 .msa("pay")
-                .post()
+                .get()
                 .uri("/api")
                 //.param(ImmutableMap.of("nat", "us"))
-                .retrieve();
+                .retrieveTo(String.class);
         System.out.println("r = " + r);
     }
     /*@Test
