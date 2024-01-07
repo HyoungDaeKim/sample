@@ -3,7 +3,6 @@ package client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import demo.sample.RestMessage;
 import feign.Feign;
 import feign.Logger;
 import feign.Target;
@@ -15,16 +14,12 @@ import org.springframework.cloud.openfeign.support.SpringDecoder;
 import org.springframework.cloud.openfeign.support.SpringEncoder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Setter
 public class FeignClientAdaptor extends AbstractClientAdaptor {
@@ -40,6 +35,8 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
 
     @Override
     public RequestInfo<?> msa(String msa) {
+        Assert.notNull(getUriMap(), "'uriMap' not null!");
+        Assert.hasText(msa, "'msa' must not be emptys!");
         return new FeignClientRequestInfo(msaFeignClient, getUriMap().get(msa));
     }
 

@@ -9,10 +9,26 @@
             </Pattern>
         </layout>
     </appender>
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+            <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                <prettyPrint>true</prettyPrint>
+            </jsonFormatter>
+            <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
+        </layout>
+    </appender>
     <logger name="org.springframework" level="DEBUG" />
     <logger name="client" level="DEBUG" />
     <logger name="feign" level="DEBUG" />
-    <root level="ERROR">
-        <appender-ref ref="CONSOLE"/>
-    </root>
+
+    <springProfile name="default">
+        <root level="ERROR">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+    <springProfile name="test">
+        <root level="ERROR">
+            <appender-ref ref="JSON"/>
+        </root>
+    </springProfile>
 </configuration>

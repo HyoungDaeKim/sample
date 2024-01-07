@@ -1,11 +1,15 @@
+server:
+  port: 9090
+
 spring:
-  kafka:
-    consumer:
-      group-id: tpd-loggers
-      auto-offset-reset: earliest
-    # change this property if you are using your own
-    # Kafka cluster or your Docker IP is different
-    bootstrap-servers: localhost:9092
+#  kafka:
+#    consumer:
+#      group-id: tpd-loggers
+#      auto-offset-reset: earliest
+#    # change this property if you are using your own
+#    # Kafka cluster or your Docker IP is different
+#    bootstrap-servers: localhost:9092
+
   cloud:
     openfeign:
       client:
@@ -18,6 +22,52 @@ spring:
       httpclient:
         hc5:
           enabled: true
+
+#Kafka PROPERTIES
+kafka:
+  bootstrap-servers: localhost:9092
+#  ssl:
+#    protocol: SSL
+#    trust-store-location: classpath:/app/store/truststore.jks
+#    trust-store-password: password
+#    key-store-location: classpath:/app/store/keystore.jks
+#    key-store-password: password
+#    key-password: password
+  producer:
+    producer1:
+#      bootstrap-servers: localhost:9092
+      topic: advice-topic1
+      retries: 0
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    producer2:
+#      bootstrap-servers: localhost:9092
+      topic: advice-topic2
+      retries: 2
+      acks: 1
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  consumer:
+    json:
+      topic: advice-topic1
+      group-id: tpd-loggers1
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonSerializer
+    string:
+      topic: advice-topic1
+      group-id: tpd-loggers2
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    byteArray:
+      topic: advice-topic1
+      group-id: tpd-loggers3
+      auto-offset-reset: latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+
 
 tpd:
   topic-name: advice-topic
