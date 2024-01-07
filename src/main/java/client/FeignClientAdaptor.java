@@ -118,21 +118,16 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
         }
 
         @Override
-        public <T> RestMessage<T> retrieve() {
-            return retrieveTo(new ParameterizedTypeReference<>() {
-            });
-        }
-
-        @Override
         public <T> T retrieveTo(Class<T> type) {
             String value = retrieveString();
             return mapper.convertValue(value, type);
         }
 
         @Override
-        public <T> T retrieveTo(ParameterizedTypeReference<T> bodyType) {
+        public <T> T retrieveTo() {
             T result;
             String value = retrieveString();
+            ParameterizedTypeReference<T> bodyType = new ParameterizedTypeReference<T>() {};
             TypeReference<?> tr = new TypeReference<>() {
                 public Type getType() {
                     return bodyType.getType();

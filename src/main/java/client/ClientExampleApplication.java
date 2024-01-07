@@ -45,13 +45,11 @@ public class ClientExampleApplication {
                     .uri("/albums")
                     .header("contentType", "json")
                     //.param(ImmutableMap.of("nat", "us"))
-                    .retrieveTo(new ParameterizedTypeReference<>() {
-                    });
+                    .retrieveTo();
             log.debug("r = " + r);
             log.debug("***********************************");
             List<Map> r1 = restClientAdaptor.baseUrl(uriMap.get("pay")).get().uri("/albums")
-                    .retrieveTo(new ParameterizedTypeReference<>() {
-                    });
+                    .retrieveTo();
             log.debug("r1 = " + r1);
         };
     }

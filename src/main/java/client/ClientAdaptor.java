@@ -16,8 +16,10 @@ public interface ClientAdaptor {
         R post();
         R param(Object param);
         R header(String headerName, String... headerValues);
-        <T> RestMessage<T> retrieve();
+        default <T> RestMessage<T> retrieve() {
+            return retrieveTo();
+        }
         <T> T retrieveTo(Class<T> type);
-        <T> T retrieveTo(ParameterizedTypeReference<T> bodyType);
+        <T> T retrieveTo();
     }
 }

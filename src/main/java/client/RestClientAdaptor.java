@@ -61,21 +61,13 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
         }
 
         @Override
-        public <T> RestMessage<T> retrieve() {
-            return requestHeadersUriSpec.retrieve().body(
-                    new ParameterizedTypeReference<>() {
-                    }
-            );
-        }
-
-        @Override
         public <T> T retrieveTo(Class<T> type) {
             return requestHeadersUriSpec.retrieve().body(type);
         }
 
         @Override
-        public <T> T retrieveTo(ParameterizedTypeReference<T> bodyType) {
-            return requestHeadersUriSpec.retrieve().body(bodyType);
+        public <T> T retrieveTo() {
+            return requestHeadersUriSpec.retrieve().body(new ParameterizedTypeReference<T>() {});
         }
     }
 }
