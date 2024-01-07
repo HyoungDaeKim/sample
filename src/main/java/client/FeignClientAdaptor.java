@@ -3,6 +3,7 @@ package client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import demo.sample.RestMessage;
 import feign.Feign;
 import feign.Logger;
 import feign.Target;
@@ -85,8 +86,7 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
             return this;
         }
 
-        @Override
-        public String retrieve() {
+        protected String retrieveString() {
             String url = baseUrl;
             if (!url.endsWith("/")) {
                 url += uri;
@@ -118,15 +118,21 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
         }
 
         @Override
+        public <T> RestMessage<T> retrieve() {
+            return retrieveTo(new ParameterizedTypeReference<>() {
+            });
+        }
+
+        @Override
         public <T> T retrieveTo(Class<T> type) {
-            String value = retrieve();
+            String value = retrieveString();
             return mapper.convertValue(value, type);
         }
 
         @Override
         public <T> T retrieveTo(ParameterizedTypeReference<T> bodyType) {
             T result;
-            String value = retrieve();
+            String value = retrieveString();
             TypeReference<?> tr = new TypeReference<>() {
                 public Type getType() {
                     return bodyType.getType();

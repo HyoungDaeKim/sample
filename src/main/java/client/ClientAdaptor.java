@@ -1,5 +1,6 @@
 package client;
 
+import demo.sample.RestMessage;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.lang.reflect.Type;
@@ -15,7 +16,7 @@ public interface ClientAdaptor {
         R post();
         R param(Object param);
         R header(String headerName, String... headerValues);
-        String retrieve();
+        <T> RestMessage<T> retrieve();
         <T> T retrieveTo(Class<T> type);
         <T> T retrieveTo(ParameterizedTypeReference<T> bodyType);
     }

@@ -23,10 +23,10 @@ tpd:
   topic-name: advice-topic
   messages-per-request: 10
 
-pybc:
-  urlMap:
-    pay: https://randomuser.me
-    memb: https://randomuser.me
+#pybc:
+#  urlMap:
+#    pay: https://randomuser.me
+#    memb: https://randomuser.me
 
 prop:
   test:

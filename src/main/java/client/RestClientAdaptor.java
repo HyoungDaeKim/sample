@@ -1,5 +1,6 @@
 package client;
 
+import demo.sample.RestMessage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -60,7 +61,7 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
         }
 
         @Override
-        public String retrieve() {
+        public <T> RestMessage<T> retrieve() {
             return requestHeadersUriSpec.retrieve().body(
                     new ParameterizedTypeReference<>() {
                     }

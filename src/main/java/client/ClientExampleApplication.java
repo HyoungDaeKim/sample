@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.web.client.RestClient;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,12 +31,15 @@ public class ClientExampleApplication {
     @Autowired
     private ObjectFactory<HttpMessageConverters> messageConverters;
 
+    @Autowired
+    private RestClientAdaptor restClientAdaptor;
+
     @Bean
     public CommandLineRunner feignRunner() {
         return args -> {
-            FeignClientAdaptor adaptor = new FeignClientAdaptor(messageConverters);
-            adaptor.setUriMap(uriMap);
-            List<Map> r = adaptor
+            FeignClientAdaptor feignClientAdaptor = new FeignClientAdaptor(messageConverters);
+            feignClientAdaptor.setUriMap(uriMap);
+            List<Map> r = feignClientAdaptor
                     .msa("pay")
                     .get()
                     .uri("/albums")
@@ -44,6 +48,11 @@ public class ClientExampleApplication {
                     .retrieveTo(new ParameterizedTypeReference<>() {
                     });
             log.debug("r = " + r);
+            log.debug("***********************************");
+            List<Map> r1 = restClientAdaptor.baseUrl(uriMap.get("pay")).get().uri("/albums")
+                    .retrieveTo(new ParameterizedTypeReference<>() {
+                    });
+            log.debug("r1 = " + r1);
         };
     }
 }
