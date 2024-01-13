@@ -6,8 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Feign;
 import feign.Logger;
 import feign.Target;
+import feign.slf4j.Slf4jLogger;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.feign.FeignDecorators;
+import io.github.resilience4j.feign.Resilience4jFeign;
+import io.github.resilience4j.ratelimiter.RateLimiter;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.support.SpringDecoder;
@@ -21,12 +27,23 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+@Slf4j
 @Setter
 public class FeignClientAdaptor extends AbstractClientAdaptor {
     private MsaFeignClient msaFeignClient;
 
     public FeignClientAdaptor(ObjectFactory<HttpMessageConverters> messageConverters) {
-        msaFeignClient = Feign.builder()
+        CircuitBreaker circuitBreaker = CircuitBreaker.ofDefaults("sample");
+        circuitBreaker.getEventPublisher().onEvent(event -> {
+           log.info("State change {}", event);
+        });;
+        RateLimiter rateLimiter = RateLimiter.ofDefaults("sample");
+        FeignDecorators decorators = FeignDecorators.builder()
+                                         .withRateLimiter(rateLimiter)
+                                         .withCircuitBreaker(circuitBreaker)
+                                         .build();
+        msaFeignClient = Resilience4jFeign.builder(decorators)
+                .logger(new Slf4jLogger(MsaFeignClient.class))
                 .logLevel(Logger.Level.FULL)
                 .encoder(new SpringEncoder(messageConverters))
                 .decoder(new SpringDecoder(messageConverters))
