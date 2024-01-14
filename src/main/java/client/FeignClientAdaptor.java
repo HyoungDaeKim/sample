@@ -3,21 +3,17 @@ package client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import feign.Feign;
 import feign.Logger;
-import feign.Target;
 import feign.slf4j.Slf4jLogger;
-import io.github.resilience4j.circuitbreaker.CircuitBreaker;
-import io.github.resilience4j.feign.FeignDecorators;
-import io.github.resilience4j.feign.Resilience4jFeign;
-import io.github.resilience4j.ratelimiter.RateLimiter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.cloud.openfeign.FeignClientBuilder;
 import org.springframework.cloud.openfeign.support.SpringDecoder;
 import org.springframework.cloud.openfeign.support.SpringEncoder;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.util.Assert;
@@ -31,12 +27,16 @@ import java.net.URISyntaxException;
 @Setter
 public class FeignClientAdaptor extends AbstractClientAdaptor {
     private MsaFeignClient msaFeignClient;
+    private ApplicationContext applicationContext;
+    private ObjectFactory<HttpMessageConverters> messageConverters;
 
-    public FeignClientAdaptor(ObjectFactory<HttpMessageConverters> messageConverters) {
-        CircuitBreaker circuitBreaker = CircuitBreaker.ofDefaults("sample");
-        circuitBreaker.getEventPublisher().onEvent(event -> {
-           log.info("State change {}", event);
-        });;
+    public FeignClientAdaptor(ApplicationContext applicationContext, ObjectFactory<HttpMessageConverters> messageConverters) {
+        this(applicationContext, messageConverters, "default");
+    }
+
+    public FeignClientAdaptor(ApplicationContext applicationContext, ObjectFactory<HttpMessageConverters> messageConverters, String name) {
+        /*CircuitBreaker circuitBreaker = CircuitBreaker.ofDefaults("sample");
+        circuitBreaker.getEventPublisher().onEvent(event -> log.info("State change {}", event));;
         RateLimiter rateLimiter = RateLimiter.ofDefaults("sample");
         FeignDecorators decorators = FeignDecorators.builder()
                                          .withRateLimiter(rateLimiter)
@@ -47,7 +47,23 @@ public class FeignClientAdaptor extends AbstractClientAdaptor {
                 .logLevel(Logger.Level.FULL)
                 .encoder(new SpringEncoder(messageConverters))
                 .decoder(new SpringDecoder(messageConverters))
-                .target(Target.EmptyTarget.create(MsaFeignClient.class));
+                .target(Target.EmptyTarget.create(MsaFeignClient.class));*/
+
+        this.applicationContext = applicationContext;
+        this.messageConverters = messageConverters;
+        msaFeignClient = new FeignClientBuilder(applicationContext).forType(MsaFeignClient.class, name)
+                .customize(builder -> {
+                    builder.logLevel(Logger.Level.FULL);
+                    builder.logger(new Slf4jLogger(MsaFeignClient.class));
+                    builder.encoder(new SpringEncoder(messageConverters));
+                    builder.decoder(new SpringDecoder(messageConverters));
+                })
+                .fallback(MsaFeignClient.FallbackTest.class)
+                .build();
+    }
+
+    public FeignClientAdaptor create(String name) {
+        return new FeignClientAdaptor(this.applicationContext, this.messageConverters, name);
     }
 
     @Override

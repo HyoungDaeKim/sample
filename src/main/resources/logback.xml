@@ -15,18 +15,18 @@
             <timestampFormat>yyyy-MM-dd' 'HH:mm:ss.SSS</timestampFormat>
         </layout>
     </appender>
-    <!--<logger name="org.springframework" level="ERROR" >
+    <logger name="org.springframework" level="ERROR" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
-    <logger name="client" level="DEBUG" >
+    <logger name="client" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
-    <logger name="io.github.resilience4j.feign" level="DEBUG" >
+    <logger name="io.github.resilience4j.circuitbreaker" level="DEBUG" additivity="false">
         <appender-ref ref="CONSOLE"/>
-    </logger>-->
+    </logger>
 
     <springProfile name="default">
-        <root level="DEBUG">
+        <root level="ERROR">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>

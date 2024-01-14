@@ -12,16 +12,46 @@ spring:
 
   cloud:
     openfeign:
-      client:
-        config:
-            test:
-                url: http://remote-service.com
-                connectTimeout: 5000
-                readTimeout: 5000
-                loggerLevel: full
+      circuitbreaker:
+        enabled: true
       httpclient:
         hc5:
           enabled: true
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default: #10번 요청에서 실패율이 50%가 넘으면 서킷브레이커가 Open하고 Open 30초 후에 다시 Half-Open 상태로 전환
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 3 #서킷브레이커가 닫힌 상태에서 기록할 sliding window 크기 설정
+        failure-rate-threshold: 50 #실패 비율 임계치를 백분율로 설정
+        minimumNumberOfCalls: 3
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 30s #서킷브레이커가 Open후 waitDurationInOpenState 시간만큼 지난 후 Half-Open 상태도 전환
+        slowCallDurationThreshold: 5s
+        registerHealthIndicator: true
+#        recordFailurePredicate: client.DefaultExceptionRecordFailurePredicate
+          #recordFailurePredicate는 어떤 예외를 Fail로 기록할 것인지를 결정하기 위한 Predicate 설정이다.
+    instances:
+      test:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 1
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 5s
+        cancelRunningFuture: true
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus  # 대시보드 scrape endpoint
+      base-path: /actuator
+  metrics:
+    tags:
+      application: mangkyu-server  # 대시보드에 노출될 application 명
 
 #Kafka PROPERTIES
 kafka:
@@ -85,11 +115,6 @@ kafka:
       auto-offset-reset: latest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
-
-
-tpd:
-  topic-name: advice-topic
-  messages-per-request: 10
 
 #pybc:
 #  urlMap:
