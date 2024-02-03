@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -27,8 +28,8 @@ public class RestCtrl {
   }
 
   @GetMapping(value = "/sample2")
-  public List<SampleVo> get2() {
-    return twoMapper.getNames();
+  public List<Map<String, Object>> get2() {
+    return twoMapper.getNames2();
   }
 
 }

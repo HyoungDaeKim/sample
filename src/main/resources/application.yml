@@ -130,11 +130,11 @@ prop:
 multiple-datasource:
   test: test
   datasource-config:
-    - name: datasourceOne
+    - name: one
       datasource:
-        jdbcUrl: jdbc:h2:file:d:/test_db;AUTO_SERVER=TRUE
-        username: test
-        password: test
+        jdbcUrl: jdbc:h2:~/test
+        username: sa
+        password:
         driverClassName: org.h2.Driver
         maximumPoolSize: 20
       mybatis:
@@ -142,11 +142,11 @@ multiple-datasource:
         mapper-locations: classpath*:/mapper/**/*.xml
         base-package: config
         annotation-class: org.apache.ibatis.annotations.Mapper
-    - name: datasourceTwo
+    - name: two
       datasource:
-        jdbcUrl: jdbc:h2:file:d:/test_db;AUTO_SERVER=TRUE
-        username: test
-        password: test
+        jdbcUrl: jdbc:h2:~/test
+        username: sa
+        password:
         driverClassName: org.h2.Driver
         maximumPoolSize: 20
       mybatis:
