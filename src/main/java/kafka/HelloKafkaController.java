@@ -1,9 +1,10 @@
-package io.tpd.kafkaexample;
+package kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.Headers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -28,8 +29,8 @@ public class HelloKafkaController {
     private CountDownLatch latch;
 
     public HelloKafkaController(
-            final KafkaTemplate<String, Object> template,
-            @Value("${tpd.topic-name}") final String topicName,
+            @Qualifier("producer1") final KafkaTemplate<String, Object> template,
+            @Value("${kafka.producer.producer1.topic}") final String topicName,
             @Value("${tpd.messages-per-request}") final int messagesPerRequest) {
         this.template = template;
         this.topicName = topicName;
@@ -48,7 +49,7 @@ public class HelloKafkaController {
         return "Hello Kafka!";
     }
 
-    @KafkaListener(topics = "advice-topic", clientIdPrefix = "json",
+    @KafkaListener(topics = "${kafka.producer.producer1.topic}", clientIdPrefix = "json",
             containerFactory = "kafkaListenerContainerFactory")
     public void listenAsObject(ConsumerRecord<String, PracticalAdvice> cr,
                                @Payload PracticalAdvice payload) {
@@ -57,7 +58,7 @@ public class HelloKafkaController {
         latch.countDown();
     }
 
-    @KafkaListener(topics = "advice-topic", clientIdPrefix = "string",
+    @KafkaListener(topics = "${kafka.producer.producer1.topic}", clientIdPrefix = "string",
             containerFactory = "kafkaListenerStringContainerFactory")
     public void listenasString(ConsumerRecord<String, String> cr,
                                @Payload String payload) {
@@ -66,7 +67,7 @@ public class HelloKafkaController {
         latch.countDown();
     }
 
-    @KafkaListener(topics = "advice-topic", clientIdPrefix = "bytearray",
+    @KafkaListener(topics = "${kafka.producer.producer1.topic}", clientIdPrefix = "bytearray",
             containerFactory = "kafkaListenerByteArrayContainerFactory")
     public void listenAsByteArray(ConsumerRecord<String, byte[]> cr,
                                   @Payload byte[] payload) {

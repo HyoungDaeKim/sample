@@ -1,11 +1,10 @@
 package client;
 
-import demo.sample.RestMessage;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
+import org.springframework.util.Assert;
 import org.springframework.web.client.RestClient;
 
 @RequiredArgsConstructor
@@ -14,6 +13,8 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
 
     @Override
     public RequestInfo<?> msa(String msa) {
+        Assert.notNull(getUriMap(), "'uriMap' not null!");
+        Assert.hasText(msa, "'msa' must not be emptys!");
         restClientBuilder.baseUrl(getUriMap().get(msa));
         return new RestClientRequestInfo(restClientBuilder.build());
     }
@@ -67,7 +68,8 @@ public class RestClientAdaptor extends AbstractClientAdaptor {
 
         @Override
         public <T> T retrieveTo() {
-            return requestHeadersUriSpec.retrieve().body(new ParameterizedTypeReference<T>() {});
+            return requestHeadersUriSpec.retrieve().body(new ParameterizedTypeReference<>() {
+            });
         }
     }
 }

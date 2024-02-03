@@ -1,4 +1,4 @@
-package io.tpd.kafkaexample;
+package kafka;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

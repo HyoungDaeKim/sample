@@ -1,10 +1,6 @@
 package client;
 
 import demo.sample.RestMessage;
-import org.springframework.core.ParameterizedTypeReference;
-
-import java.lang.reflect.Type;
-import java.net.URISyntaxException;
 
 public interface ClientAdaptor {
     RequestInfo<?> msa(String msa);
@@ -16,10 +12,10 @@ public interface ClientAdaptor {
         R post();
         R param(Object param);
         R header(String headerName, String... headerValues);
+        <T> T retrieveTo(Class<T> type);
+        <T> T retrieveTo();
         default <T> RestMessage<T> retrieve() {
             return retrieveTo();
         }
-        <T> T retrieveTo(Class<T> type);
-        <T> T retrieveTo();
     }
 }
