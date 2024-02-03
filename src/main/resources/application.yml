@@ -36,3 +36,31 @@ prop:
     test2:
       name: test2
       value: value2
+
+multiple-datasource:
+  test: test
+  datasource-config:
+    - name: datasourceOne
+      datasource:
+        jdbcUrl: jdbc:h2:file:d:/test_db;AUTO_SERVER=TRUE
+        username: test
+        password: test
+        driverClassName: org.h2.Driver
+        maximumPoolSize: 20
+      mybatis:
+        config-location:
+        mapper-locations: classpath*:/mapper/**/*.xml
+        base-package: config
+        annotation-class: org.apache.ibatis.annotations.Mapper
+    - name: datasourceTwo
+      datasource:
+        jdbcUrl: jdbc:h2:file:d:/test_db;AUTO_SERVER=TRUE
+        username: test
+        password: test
+        driverClassName: org.h2.Driver
+        maximumPoolSize: 20
+      mybatis:
+        config-location:
+        mapper-locations: classpath*:/mapper/**/*.xml
+        base-package: config
+        annotation-class: config.data.TwoMapper
