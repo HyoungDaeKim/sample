@@ -12,6 +12,6 @@ import java.util.List;
 @Mapper
 public interface SampleMapper {
 
-  List<SampleVo> getNames();
+  List<String> getNames();
 
 }

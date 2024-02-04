@@ -23,7 +23,7 @@ public class RestCtrl {
   }
 
   @GetMapping(value = "/sample")
-  public List<SampleVo> get() {
+  public List<String> get() {
     return mapper.getNames();
   }
 

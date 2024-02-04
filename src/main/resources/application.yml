@@ -141,7 +141,6 @@ multiple-datasource:
         config-location:
         mapper-locations: classpath*:/mapper/**/*.xml
         base-package: config
-        annotation-class: org.apache.ibatis.annotations.Mapper
     - name: two
       datasource:
         jdbcUrl: jdbc:h2:~/test

@@ -15,6 +15,7 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.*;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.util.StringUtils;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -135,13 +136,15 @@ public class MultipleDatasourceConfigBeanPostProcessor implements BeanDefinition
 	private void registerMapperScanner(
 			BeanDefinitionRegistry registry, MultipleDatasourceProperties.DatasourceConfig config
 	) throws ClassNotFoundException {
-		AbstractBeanDefinition mapperScannerConfigurer = BeanDefinitionBuilder
+		String annotationClass = config.getMybatis().getAnnotationClass();
+		BeanDefinitionBuilder builder = BeanDefinitionBuilder
 				.genericBeanDefinition(MapperScannerConfigurer.class)
 				.addPropertyValue("sqlSessionFactoryBeanName", config.getBeanName(SESSION_FACTORY))
-				.addPropertyValue("basePackage", config.getMybatis().getBasePackage())
-				.addPropertyValue("annotationClass", Class.forName(config.getMybatis().getAnnotationClass()))
-				.getBeanDefinition();
-
+				.addPropertyValue("basePackage", config.getMybatis().getBasePackage());
+		if(StringUtils.hasText(annotationClass)) {
+			builder.addPropertyValue("annotationClass", Class.forName(config.getMybatis().getAnnotationClass()));
+		}
+		AbstractBeanDefinition mapperScannerConfigurer = builder.getBeanDefinition();
 		registry.registerBeanDefinition(
 				config.getBeanName(MAPPER_SCANNER), mapperScannerConfigurer
 		);
